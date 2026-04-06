@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "animate.css"
+import { ToastContainer,toast } from 'react-toastify'
 
 function App() {
+
+  const [expression,setExpression] = useState('')
+  const [result, setResult] = useState(0)
+
   const buttons = [
     ["7", "8", "9", "*"],
     ["4", "5", "6", "/"],
@@ -11,7 +16,23 @@ function App() {
   ]
 
   const calculate = (input)=>{
-  alert(input)
+    if(input === "=")
+    {
+      try{     
+      const result = eval(expression)
+      setResult(result.toFixed(2))
+      return;
+      }
+      catch(err){
+      toast.error('Invalid Expression')
+      }
+    }
+ setExpression((prev)=> prev+input)
+  }
+
+  const reset = () =>{
+    setResult(0);
+    setExpression('')
   }
 
   return (
@@ -19,12 +40,13 @@ function App() {
       <div className='space-y-6 bg-white rounded-2xl p-8 shadow-4xl w-lg animate__animated animate__slideInUp border border-gray-300'>
        <div className='flex justify-between items-center'>
         <h1 className='text-xl font-medium'>Calculater</h1>
-        <h1 className='text-4xl font-bold'>=123456</h1>
+        <h1 className='text-4xl font-bold'>={result}</h1>
        </div>
         <input
         className='border p-3 w-full border-gray-300 rounded-lg text-right'
         placeholder='0'
-        readOnly
+        value={expression}
+        onChange={(e)=>setExpression(e.target.value.trim())}
         />
         <div className='space-y-4'>
           {
@@ -38,8 +60,10 @@ function App() {
               </div>
             ))
           }
+          <buttton onClick={reset} className="bg-rose-500 text-white font-medium w-full p-3 rounded-lg hover:scale-110 cursor-pointer active:scale-80 transition duration-300">Reset</buttton>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   )
 }
